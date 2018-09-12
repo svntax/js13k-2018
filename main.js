@@ -7,8 +7,14 @@ var currentScore = 0;
 var hiScore = 0;
 
 function restartGame(){
+	console.log("Restarted game");
 	currentScore = 0;
+	var restartPanel = document.getElementById("restart");
 	document.getElementById("score").setAttribute("text", {value: "Score: 0"});
+	restartPanel.setAttribute("text", {color: "#339933"});
+	restartPanel.object3D.scale.set(1, 1, 1);
+	restartPanel.object3D.rotation.y = 180;
+	document.getElemen
 	var swirlCenter = document.getElementById("swirl-center");
 	while(swirlCenter.firstChild){
 		swirlCenter.removeChild(swirlCenter.firstChild);
@@ -136,6 +142,7 @@ AFRAME.registerComponent("swirl", {
 					deadSound.play();
 				}
 				gameOver = true;
+				document.getElementById("restart").object3D.rotation.y = 0;
 				document.getElementById("score").setAttribute("text", {value: "Game Over!\nScore: " + currentScore});
 			}
 		});
@@ -287,7 +294,7 @@ AFRAME.registerComponent("swirl-spawner", {
 
 AFRAME.registerComponent("restart-game", {
 	schema: {
-		delay: {type: "number", default: 2},
+		delay: {type: "number", default: 1},
 	},
 	
 	init: function(){
@@ -298,6 +305,7 @@ AFRAME.registerComponent("restart-game", {
 			if(gameOver && !this.inDelay){
 				this.inDelay = true;
 				el.object3D.scale.set(1.2, 1.2, 1.2);
+				el.setAttribute("text", {color: "#FFFFFF"});
 			}
 		});
 		el.addEventListener("mouseleave", function(){
@@ -305,6 +313,7 @@ AFRAME.registerComponent("restart-game", {
 				this.inDelay = false;
 				el.delayTimer = 0;
 				el.object3D.scale.set(1, 1, 1);
+				el.setAttribute("text", {color: "#339933"});
 			}
 		});
 	},
