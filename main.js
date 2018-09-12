@@ -2,24 +2,23 @@ function toRadians(a){
   return a * (Math.PI / 180);
 }
 
-var gameOver = false;
+var gameOver = true;
 var currentScore = 0;
 var hiScore = 0;
 
 function restartGame(){
-	console.log("Restarted game");
 	currentScore = 0;
 	var restartPanel = document.getElementById("restart");
-	document.getElementById("score").setAttribute("text", {value: "Score: 0"});
+	document.getElementById("score").setAttribute("text", {value: "Score: 0\nHigh Score: " + hiScore});
 	restartPanel.setAttribute("text", {color: "#339933"});
 	restartPanel.object3D.scale.set(1, 1, 1);
 	restartPanel.object3D.rotation.y = 180;
-	document.getElemen
 	var swirlCenter = document.getElementById("swirl-center");
 	while(swirlCenter.firstChild){
 		swirlCenter.removeChild(swirlCenter.firstChild);
 	}
 	gameOver = false;
+	document.getElementById("menu").object3D.rotation.y = 180;
 }
 
 AFRAME.registerComponent("draw-canvas", {
@@ -29,14 +28,14 @@ AFRAME.registerComponent("draw-canvas", {
 		this.canvas = document.getElementById(this.data);
 		this.ctx = this.canvas.getContext('2d');
 		this.ctx.rect(0, 0, 16, 16);
-		this.ctx.fillStyle = "#DEDEDE";
+		this.ctx.fillStyle = "#EFEFEF";
 		this.ctx.fill();
 		for(var i = 0; i < 16; i++){
 			for(var j = 0; j < 16; j++){
 				this.ctx.rect(i*16, j*16, 16, 16);
 			}
 		}
-		this.ctx.strokeStyle = "#2222FF"
+		this.ctx.strokeStyle = "#000066"
 		this.ctx.stroke();
 	}
 });
@@ -79,7 +78,11 @@ AFRAME.registerComponent("coin-collect", {
 				if(coinSound){
 					coinSound.play();
 				}
-				document.getElementById("score").setAttribute("text", {value: "Score: " + ++currentScore});
+				++currentScore;
+				if(currentScore > hiScore){
+					hiScore = currentScore;
+				}
+				document.getElementById("score").setAttribute("text", {value: "Score: " + currentScore + "\nHigh Score: " + hiScore});
 				el.object3D.scale.set(0.4, 0.4, 1.2);
 			}
 		});
@@ -143,7 +146,8 @@ AFRAME.registerComponent("swirl", {
 				}
 				gameOver = true;
 				document.getElementById("restart").object3D.rotation.y = 0;
-				document.getElementById("score").setAttribute("text", {value: "Game Over!\nScore: " + currentScore});
+				document.getElementById("menu").object3D.rotation.y = 0;
+				document.getElementById("score").setAttribute("text", {value: "Game Over!\nScore: " + currentScore + "\nHigh Score: " + hiScore});
 			}
 		});
 		el.addEventListener("mouseleave", function(){
