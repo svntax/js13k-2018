@@ -13,5 +13,5 @@ lineSound.loop = true;
 
 var deadSound = new TinyMusic.Sequence(ac, 120, ["E2 q", "C2 0.2", "C2 0.2", "C2 0.2", "C2 0.2", "C2 0.2"]);
 deadSound.smoothing = 0.8;
-deadSound.gain.gain.value = 0.2;
+deadSound.gain.gain.value = 0.1;
 deadSound.loop = false;

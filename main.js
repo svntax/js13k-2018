@@ -6,6 +6,16 @@ var gameOver = false;
 var currentScore = 0;
 var hiScore = 0;
 
+function restartGame(){
+	currentScore = 0;
+	document.getElementById("score").setAttribute("text", {value: "Score: 0"});
+	var swirlCenter = document.getElementById("swirl-center");
+	while(swirlCenter.firstChild){
+		swirlCenter.removeChild(swirlCenter.firstChild);
+	}
+	gameOver = false;
+}
+
 AFRAME.registerComponent("draw-canvas", {
 	schema: {default: ""},
 
@@ -35,10 +45,11 @@ AFRAME.registerComponent("spin", {
 	tick: function(time, deltaTime){
 		var data = this.data;
 		var el = this.el;
-		
-		el.object3D.rotation.x += toRadians(data.rotX) * (deltaTime / 1000);
-		el.object3D.rotation.y += toRadians(data.rotY) * (deltaTime / 1000);
-		el.object3D.rotation.z += toRadians(data.rotZ) * (deltaTime / 1000);
+		if(!gameOver){
+			el.object3D.rotation.x += toRadians(data.rotX) * (deltaTime / 1000);
+			el.object3D.rotation.y += toRadians(data.rotY) * (deltaTime / 1000);
+			el.object3D.rotation.z += toRadians(data.rotZ) * (deltaTime / 1000);
+		}
 	}
 });
 
@@ -55,14 +66,14 @@ AFRAME.registerComponent("coin-collect", {
 		this.delayTimer = 0;
 		var data = this.data;
 		var el = this.el;
-		this.inDelay = false;
+		el.inDelay = false;
 		el.addEventListener("mouseenter", function(){
 			if(!gameOver && !this.inDelay){
 				this.inDelay = true;
 				if(coinSound){
 					coinSound.play();
 				}
-				document.getElementById("score").setAttribute("text", {value: "Score: " + ++currentScore});;
+				document.getElementById("score").setAttribute("text", {value: "Score: " + ++currentScore});
 				el.object3D.scale.set(0.4, 0.4, 1.2);
 			}
 		});
@@ -125,6 +136,7 @@ AFRAME.registerComponent("swirl", {
 					deadSound.play();
 				}
 				gameOver = true;
+				document.getElementById("score").setAttribute("text", {value: "Game Over!\nScore: " + currentScore});
 			}
 		});
 		el.addEventListener("mouseleave", function(){
@@ -268,6 +280,44 @@ AFRAME.registerComponent("swirl-spawner", {
 					var rz = Math.random() * 360;
 					spawnSwirl(rx, ry, rz, 45, 90, 90);
 				}
+			}
+		}
+	}
+});
+
+AFRAME.registerComponent("restart-game", {
+	schema: {
+		delay: {type: "number", default: 2},
+	},
+	
+	init: function(){
+		var el = this.el;
+		el.inDelay = false;
+		el.delayTimer = 0;
+		el.addEventListener("mouseenter", function(){
+			if(gameOver && !this.inDelay){
+				this.inDelay = true;
+				el.object3D.scale.set(1.2, 1.2, 1.2);
+			}
+		});
+		el.addEventListener("mouseleave", function(){
+			if(gameOver){
+				this.inDelay = false;
+				el.delayTimer = 0;
+				el.object3D.scale.set(1, 1, 1);
+			}
+		});
+	},
+	
+	tick: function(time, deltaTime){
+		var data = this.data;
+		var el = this.el;
+		if(gameOver && el.inDelay){
+			el.delayTimer += deltaTime / 1000;
+			if(el.delayTimer > data.delay){
+				el.delayTimer = 0;
+				el.inDelay = false;
+				restartGame();
 			}
 		}
 	}
