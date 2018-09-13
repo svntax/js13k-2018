@@ -9,7 +9,7 @@ var hiScore = 0;
 function restartGame(){
 	currentScore = 0;
 	var restartPanel = document.getElementById("restart");
-	document.getElementById("score").setAttribute("text", {value: "Score: 0\nHigh Score: " + hiScore});
+	document.getElementById("score").setAttribute("value", "Score: 0\nHigh Score: " + hiScore);
 	restartPanel.setAttribute("text", {color: "#339933"});
 	restartPanel.object3D.scale.set(1, 1, 1);
 	restartPanel.object3D.rotation.y = 180;
@@ -82,7 +82,7 @@ AFRAME.registerComponent("coin-collect", {
 				if(currentScore > hiScore){
 					hiScore = currentScore;
 				}
-				document.getElementById("score").setAttribute("text", {value: "Score: " + currentScore + "\nHigh Score: " + hiScore});
+				document.getElementById("score").setAttribute("value", "Score: " + currentScore + "\nHigh Score: " + hiScore);
 				el.object3D.scale.set(0.4, 0.4, 1.2);
 			}
 		});
@@ -123,8 +123,7 @@ AFRAME.registerComponent("swirl", {
 		rotSpeed: {type: "number", default: 60},
 		maxLength: {type: "number", default: 60},
 		maxAngleChange: {type: "number", default: 90},
-		delay: {type: "number", default: 1.5},
-		color: {default: "blue"} //TODO gaze debug test
+		delay: {type: "number", default: 1.5}
 	},
 	
 	init: function(){
@@ -136,23 +135,17 @@ AFRAME.registerComponent("swirl", {
 		
 		var el = this.el;
 		var data = this.data;
-		var defaultColor = el.getAttribute("material").color;
 		var geom = el.getAttribute("geometry");
 		el.addEventListener("mouseenter", function(){
 			if(!this.inDelay && !gameOver){
-				el.setAttribute("material", "color", data.color);
+				el.setAttribute("material", "color", "blue");
 				if(deadSound && !gameOver){
 					deadSound.play();
 				}
 				gameOver = true;
 				document.getElementById("restart").object3D.rotation.y = 0;
 				document.getElementById("menu").object3D.rotation.y = 0;
-				document.getElementById("score").setAttribute("text", {value: "Game Over!\nScore: " + currentScore + "\nHigh Score: " + hiScore});
-			}
-		});
-		el.addEventListener("mouseleave", function(){
-			if(!this.inDelay && !gameOver){
-				el.setAttribute("material", "color", defaultColor);
+				document.getElementById("score").setAttribute("value", "Game Over!\nScore: " + currentScore + "\nHigh Score: " + hiScore);
 			}
 		});
 		
@@ -237,7 +230,7 @@ AFRAME.registerComponent("swirl", {
 				else{
 					el.parentNode.removeChild(this.startPoint);
 					el.parentNode.removeChild(this.endPoint);
-					el.parentNode.removeChild(el); //TODO object pooling?
+					el.parentNode.removeChild(el);
 				}
 			}
 		}
