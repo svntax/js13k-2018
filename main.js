@@ -19,6 +19,9 @@ function restartGame(){
 	}
 	gameOver = false;
 	document.getElementById("menu").object3D.rotation.y = 180;
+	if(startSound){
+		startSound.play();
+	}
 }
 
 AFRAME.registerComponent("draw-canvas", {
