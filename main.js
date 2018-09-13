@@ -240,12 +240,12 @@ AFRAME.registerComponent("swirl", {
 	}
 });
 
-function spawnSwirl(rotX, rotY, rotZ, rotSpeed, maxLength, maxAngleChange, x = 0, y = 0, z = 0){
+function spawnSwirl(rotX, rotY, rotZ, rotSpeed, maxLength, maxAngleChange){
 	var parentEl = document.getElementById("swirl-center");
 	
 	var centerEl = document.createElement("a-entity");
 	centerEl.setAttribute("rotation", rotX + " " + rotY + " " + rotZ);
-	centerEl.setAttribute("position", x + " " + y + " " + z);
+	centerEl.setAttribute("position", 0 + " " + 0 + " " + 0);
 	
 	var swirlEl = document.createElement("a-entity");
 	swirlEl.setAttribute("geometry", {
